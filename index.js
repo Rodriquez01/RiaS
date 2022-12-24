@@ -31,6 +31,27 @@ const client = new Client({
   ],
 });
 
+global.client = client;
+client.commands = (global.commands = []);
+//#region KOMUTLAR LOAD
+fs.readdir("./commands/", (err, files) => {
+    if (err) throw err;
+
+    files.forEach((file) => {
+        if (!file.endsWith(".js")) return;
+        let props = require(`./commands/${file}`);
+    
+        client.commands.push({
+             name: props.name.toLowerCase(),
+             description: props.description,
+             options: props.options,
+             type: props.type,
+        })
+        console.log(`👌 Slash Komut Yüklendi: ${props.name}`);
+    });
+});
+
+
 module.exports = client;
 
 require("./events/message.js")
